@@ -13,8 +13,11 @@ void printMenu();
 void readTodos();
 void backOption();
 void createTodo();
+int getLastIndexTodo();
 void removeTodo();
 void updateTodo();
+void clearConsole();
+int getIndexByTodoId(int todoId);
 
 int main()
 {
@@ -25,33 +28,38 @@ int main()
 		scanf_s("%d", &action);
 		if (action == 1)
 		{
-				system("cls");
+				clearConsole();
 				createTodo();
 				backOption();
 		}
 		if (action == 2)
 		{
-				system("cls");
+				clearConsole();
 				readTodos();
 				backOption();
 		}
 		if (action == 3)
 		{
-				system("cls");
+				clearConsole();
 				updateTodo();
 				backOption();
 		}
 		if (action == 4)
 		{
-				system("cls");
+				clearConsole();
 				removeTodo();
 				backOption();
 		}
 	} while (action != 5);
 }
 
-void printMenu() {
+void clearConsole()
+{
 	system("cls");
+}
+
+void printMenu() {
+	clearConsole();
 	printf("Todo CLI");
 	printf("\n1. Create");
 	printf("\n2. Read");
@@ -95,17 +103,24 @@ int getLastIndexTodo()
 }
 
 void createTodo() {
+	// Create temp text
 	char text[25];
+	// Ask for todo title
 	printf("Title of the todo: ");
+
+	// Get user input
 	fgetc(stdin);
 	fgets(text, sizeof(text), stdin);
 	text[strlen(text) - 1] = 0;
 
+	// Get last index 
 	int lastIndex = getLastIndexTodo();
 
+	// Create a new todo
 	todos[lastIndex].id = lastIndex;
 	strcpy_s(todos[lastIndex].title, text);
 	
+	// Print new todo
 	printf("Added: %s", todos[lastIndex].title);
 }
 
@@ -132,12 +147,16 @@ void removeTodo() {
 		printf("\nWhat todo would you like to remove: ");
 		scanf_s("%d", &todoId);
 		int todoIndex = getIndexByTodoId(todoId);
+		// Create a struct of the todo we want to delete
 		struct Todo deletedTodo = todos[todoIndex];
+		
+		// Overwrite the todo we want to delete by shifting the todos on to it and sorting
 		int todoSize = sizeof(todos) / sizeof(todos[0]);
 		for (int i = todoIndex; i < todoSize - 1; i++) {
 			todos[i] = todos[i + 1];
 		}
-		system("cls");
+
+		clearConsole();
 		printf("You have removed %s\n\n", deletedTodo.title);
 		readTodos();
 		lastIndex = getLastIndexTodo();
@@ -161,11 +180,16 @@ void updateTodo()
 		int todoIndex = getIndexByTodoId(todoId);
 		char text[25];
 		printf("\nWhat would you like to change the title to: ");
+		
+		// Get user input
 		fgetc(stdin);
 		fgets(text, sizeof(text), stdin);
 		text[strlen(text) - 1] = 0;
+
+		// Copy text (from input) into the current todo
 		strcpy_s(todos[todoIndex].title, text);
-		system("cls");
+
+		clearConsole();
 		printf("You have updated %s\n\n", todos[todoIndex].title);
 		readTodos();
 	}
@@ -180,6 +204,6 @@ void backOption() {
 		printf("\n\nEnter 0 to go back to the menu: ");
 		scanf_s("%d", &action);
 	} while (action != 0);
-	system("cls");
+	clearConsole();
 }
 
